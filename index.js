@@ -98,6 +98,8 @@ function saveNewLink(link, db) {
 		else {
 			writeToLog(`can't insert ${link}`);
 		}
+	}).catch((err) => {
+		console.error(err);
 	});
 }
 
