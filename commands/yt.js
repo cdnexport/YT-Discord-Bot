@@ -3,7 +3,7 @@ module.exports = {
 	description: 'Link a random youtube video.',
 	cooldown: 5,
 	args: false,
-	usage: '!yt',
+	usage: '!yt -> for a random link to be posted.',
 	execute(message, args, db) {
 		db.getAsync('SELECT MAX(ID) as id FROM yt_links').then((id) => {
 			const max = id.id;
