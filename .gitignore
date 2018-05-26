@@ -2,5 +2,5 @@
 /ignorethese/
 config.json
 /node_modules/
-*.db
+yt.db
 package-lock.json
