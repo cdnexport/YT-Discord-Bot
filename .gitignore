@@ -1,0 +1,6 @@
+.eslintrc.json
+/ignorethese/
+config.json
+/node_modules/
+/db/
+package-lock.json
