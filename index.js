@@ -26,8 +26,10 @@ client.on('message', async message => {
 	if (message.author.bot) return;
 
 	const links = message.content.match(linkRegEx);
-	for (let i = 0; i < links.length; i++) {
-		saveNewLink(links[i], db);
+	if (links) {
+		for (let i = 0; i < links.length; i++) {
+			saveNewLink(links[i], db);
+		}
 	}
 
 	if (!message.content.startsWith(prefix)) {
