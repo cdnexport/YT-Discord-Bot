@@ -25,9 +25,9 @@ const linkRegEx = /(https:\/\/www\.youtube\.com\/watch\?v=.{11})/gm;
 client.on('message', async message => {
 	if (message.author.bot) return;
 
-	let link;
-	while ((link = linkRegEx.exec(message.content)[1])) {
-		saveNewLink(link, db);
+	const links = message.content.match(linkRegEx);
+	for (let i = 0; i < links.length; i++) {
+		saveNewLink(links[i], db);
 	}
 
 	if (!message.content.startsWith(prefix)) {
