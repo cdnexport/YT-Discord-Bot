@@ -4,7 +4,7 @@ module.exports = {
 	cooldown: 5,
 	args: false,
 	execute(message, args, db) {
-		const numRegEx = /^[0-9]+$/g;
+		const numRegEx = /^[1-9][0-9]*$/g;
 		switch (args[0]) {
 		case '-h':
 			message.channel.send('Use "!yt" for a random video.\nUse "!yt 20" for video number 20');
