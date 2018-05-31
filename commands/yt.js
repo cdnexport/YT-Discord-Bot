@@ -11,11 +11,11 @@ module.exports = {
 				break;
 			case '-l':
 				args.shift();
-				this.modifyListeningChannels(message, args[0], db, 'insert');
+				this.modifyListeningChannels(message, args[0], db, 'insert', this.insert);
 				break;
 			case '-stop':
 				args.shift();
-				this.modifyListeningChannels(message, args[0], db, 'delete');
+				this.modifyListeningChannels(message, args[0], db, 'delete', this.delete);
 				break;
 			default:
 				if (args[0]) {
@@ -45,7 +45,7 @@ module.exports = {
 				break;
 		}
 	},
-	modifyListeningChannels(message, channel, db, dbAction) {
+	modifyListeningChannels(message, channel, db, dbAction, method) {
 		const channelRegEx = /[0-9]{18}/g;
 		if (channel && (channel = channel.match(channelRegEx))) {
 			db.getAsync(`SELECT channel_id FROM listening_channels WHERE channel_id = ${channel}`).then((foundChannel) => {
@@ -55,13 +55,7 @@ module.exports = {
 				else if (!foundChannel && dbAction.toLowerCase() == 'delete') {
 					return message.reply(`<#${channel}> isn't being listened to.`);
 				}
-
-				if (dbAction.toLowerCase() == 'delete') {
-					this.delete(db, 'listening_channels', 'channel_id', channel);
-				}
-				else {
-					this.insert(db, 'listening_channels', 'channel_id', channel);
-				}
+				method(db, channel);
 			});
 		}
 		else {
@@ -69,10 +63,10 @@ module.exports = {
 		}
 	},
 	// I dream of the day DB is an object and these methods can GTFO of here and into there
-	insert(db, table, column, value) {
-		db.run(`INSERT INTO ${table}(${column}) VALUES (${value})`);
+	insertListeningChannel(db, value) {
+		db.run(`INSERT INTO listening_channels(channel_id) VALUES (${value})`);
 	},
-	delete(db, table, column, value) {
-		db.run(`DELETE FROM ${table} WHERE ${column} = ${value}`);
+	deleteListeningChannel(db, value) {
+		db.run(`DELETE FROM listening_channels WHERE channel_id = ${value}`);
 	},
 };
