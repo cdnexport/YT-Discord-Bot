@@ -11,11 +11,11 @@ module.exports = {
 				break;
 			case '-l':
 				args.shift();
-				this.modifyListeningChannels(message, args[0], db, 'insert', this.insert);
+				this.modifyListeningChannels(message, args[0], db, 'insert', this.insertListeningChannel);
 				break;
 			case '-stop':
 				args.shift();
-				this.modifyListeningChannels(message, args[0], db, 'delete', this.delete);
+				this.modifyListeningChannels(message, args[0], db, 'delete', this.deleteListeningChannel);
 				break;
 			default:
 				if (args[0]) {
