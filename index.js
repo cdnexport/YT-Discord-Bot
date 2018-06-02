@@ -25,6 +25,11 @@ const linkRegEx = /(https:\/\/www\.youtube\.com\/watch\?v=.{11})/gm;
 client.on('message', async message => {
 	if (message.author.bot) return;
 
+	const isChannelValid = await validateChannel(message, db);
+	if (isChannelValid == false) {
+		return;
+	}
+
 	const links = message.content.match(linkRegEx);
 	if (links) {
 		for (let i = 0; i < links.length; i++) {
@@ -117,4 +122,33 @@ db.getAsync = (sql) => {
 			else resolve(row);
 		});
 	});
-};
+}
+
+db.allAsync = (sql) => {
+	return new Promise((resolve, reject) => {
+		db.all(sql, (err, values) => {
+			if (err) reject(err);
+			else resolve(values);
+		});
+	});
+}
+
+function validateChannel(message, db) {
+	return new Promise((resolve, reject) => {
+		const channelRegEx = /[0-9]{18}/g;
+		const currentChannel = message.channel.id.match(channelRegEx) + "";
+
+		db.allAsync("SELECT channel_id FROM listening_channels").then((listeningChannels) => {
+			for (let i = 0; i < listeningChannels.length; i++) {
+				listeningChannels[i] = listeningChannels[i].channel_id;
+			}
+
+			if (!listeningChannels.includes(currentChannel) && listeningChannels.length != 0) {
+				resolve(false);
+			}
+			else {
+				resolve(true);
+			}
+		});
+	});
+}
