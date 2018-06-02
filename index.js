@@ -18,11 +18,13 @@ for (const file of cmdFiles) {
 const { prefix, token } = require('./config.json');
 const cooldowns = new discord.Collection();
 
-client.on('ready', () => console.log('Ready!'));
+client.on('ready', () => {
+	console.log('Ready!');
+});
 
 const linkRegEx = /(https:\/\/www\.youtube\.com\/watch\?v=.{11})/gm;
 
-client.on('message', async message => {
+client.on('message', async (message) => {
 	if (message.author.bot) return;
 
 	const isChannelValid = await validateChannel(message, db);
@@ -68,7 +70,9 @@ client.on('message', async message => {
 	const cdAmount = (cmd.cooldown || 3) * 1000;
 	if (!timestamps.has(message.author.id)) {
 		timestamps.set(message.author.id, now);
-		setTimeout(() => timestamps.delete(message.author.id), cdAmount);
+		setTimeout(() => {
+			timestamps.delete(message.author.id);
+		}, cdAmount);
 	}
 	else {
 		const expireTime = timestamps.get(message.author.id) + cdAmount;
@@ -79,7 +83,9 @@ client.on('message', async message => {
 		}
 
 		timestamps.set(message.author.id, now);
-		setTimeout(() => timestamps.delete(message.author.id), cdAmount);
+		setTimeout(() => {
+			timestamps.delete(message.author.id);
+		}, cdAmount);
 	}
 
 	try {
