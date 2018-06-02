@@ -1,3 +1,4 @@
+[![Codacy Badge](https://api.codacy.com/project/badge/Grade/6e7b0bb6a8d44d068baf0e5c5f730afd)](https://www.codacy.com/app/fudgemaster3000/YT-Discord-Bot?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=cdnexport/YT-Discord-Bot&amp;utm_campaign=Badge_Grade)
 # YT-Discord-Bot
 ## About
 Links a youtube video that was linked at one point in the guild.
