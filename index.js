@@ -103,7 +103,22 @@ function saveNewLink(link, db) {
 }
 
 function writeToLog(content) {
+	let today = new Date();
+	let logFolder = `${__dirname}/logs/`
+	let logName = `${today.getUTCFullYear().pad(4)}-${today.getUTCMonth().pad(2)}-${today.getUTCDate().pad(2)}.log`;
+	let logFullName = logFolder + logName;
+
+	content = `${today.getUTCHours().pad(2)}:${today.getUTCMinutes().pad(2)}:${today.getUTCSeconds().pad(2)}.${today.getUTCMilliseconds().pad(3)}: ${content}\n`;
 	console.log(content);
+
+	if (!fs.existsSync(logFolder)) {
+		fs.mkdirSync(logFolder);
+	}
+	fs.appendFile(logFullName, content, (err) => {
+		if (err) {
+			console.error(err);
+		}
+	});
 }
 
 db.getAsync = (sql) => {
@@ -114,3 +129,11 @@ db.getAsync = (sql) => {
 		});
 	});
 };
+
+Number.prototype.pad = function (size) {
+	var s = String(this);
+	while (s.length < (size || 2)) {
+		s = "0" + s;
+	}
+	return s;
+}

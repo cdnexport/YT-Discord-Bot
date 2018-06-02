@@ -3,3 +3,5 @@ config.json
 /node_modules/
 yt.db
 package-lock.json
+/logs/
+config.json.sample
