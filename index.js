@@ -26,7 +26,7 @@ client.on('message', async message => {
 	if (message.author.bot) return;
 
 	const isChannelValid = await validateChannel(message, db);
-	if (isChannelValid == false) {
+	if (isChannelValid === false) {
 		return;
 	}
 
@@ -122,13 +122,17 @@ db.getAsync = (sql) => {
 			else resolve(row);
 		});
 	});
-}
+};
 
 db.allAsync = (sql) => {
 	return new Promise((resolve, reject) => {
 		db.all(sql, (err, values) => {
-			if (err) reject(err);
-			else resolve(values);
+			if (err) {
+				reject(err);
+			}
+			else {
+				resolve(values);
+			}
 		});
 	});
 }
@@ -143,7 +147,7 @@ function validateChannel(message, db) {
 				listeningChannels[i] = listeningChannels[i].channel_id;
 			}
 
-			if (!listeningChannels.includes(currentChannel) && listeningChannels.length != 0) {
+			if (!listeningChannels.includes(currentChannel) && listeningChannels.length !== 0) {
 				resolve(false);
 			}
 			else {
