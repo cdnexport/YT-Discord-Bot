@@ -155,6 +155,6 @@ function validateChannel(message, db) {
 			}
 		}).catch((err) => {
 			reject(err);
-		})
+		});
 	});
 }
