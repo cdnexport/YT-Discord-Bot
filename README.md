@@ -10,7 +10,7 @@ Links a youtube video that was linked at one point in the guild.
 ## How to set up
 Install nodeJS on the operating system of your choice. I use Ubuntu.
 
-In your terminal run `node install` in the project directory. This should install the dependencies listed in the Package.json.
+In your terminal run `npm install` in the project directory. This should install the dependencies listed in the Package.json.
 
 Follow the instructions here: https://github.com/reactiflux/discord-irc/wiki/Creating-a-discord-bot-&-getting-a-token on how to set up a bot account.
 
