@@ -86,7 +86,7 @@ client.on('message', async message => {
 
 client.login(token);
 
-function saveNewLink(link, db) {
+function saveNewLink(link) {
 	db.getAsync(`SELECT * FROM yt_links WHERE link = '${link}'`).then((val) => {
 		if (!val) {
 			const sql = `INSERT INTO yt_links (link) VALUES ('${link}')`;
@@ -102,15 +102,14 @@ function saveNewLink(link, db) {
 	});
 }
 
-function writeToLog(content) {
-	let today = new Date();
-	let logFolder = `${__dirname}/logs/`
-	let logName = `${today.getUTCFullYear().pad(4)}-${today.getUTCMonth().pad(2)}-${today.getUTCDate().pad(2)}.log`;
-	let logFullName = logFolder + logName;
+function writeToLog(message) {
+	const today = new Date(),
+		logFolder = `${__dirname}/logs/`,
+		logName = `${today.getUTCFullYear().pad(4)}-${today.getUTCMonth().pad(2)}-${today.getUTCDate().pad(2)}.log`,
+		logFullName = logFolder + logName,
+		content = `${today.getUTCHours().pad(2)}:${today.getUTCMinutes().pad(2)}:${today.getUTCSeconds().pad(2)}.${today.getUTCMilliseconds().pad(3)}: ${message}\n`;
 
-	content = `${today.getUTCHours().pad(2)}:${today.getUTCMinutes().pad(2)}:${today.getUTCSeconds().pad(2)}.${today.getUTCMilliseconds().pad(3)}: ${content}\n`;
 	console.log(content);
-
 	if (!fs.existsSync(logFolder)) {
 		fs.mkdirSync(logFolder);
 	}
@@ -130,10 +129,10 @@ db.getAsync = (sql) => {
 	});
 };
 
-Number.prototype.pad = function (size) {
-	var s = String(this);
+Number.prototype.pad = (size) => {
+	let s = String(this);
 	while (s.length < (size || 2)) {
-		s = "0" + s;
+		s = '0' + s;
 	}
 	return s;
-}
+};
