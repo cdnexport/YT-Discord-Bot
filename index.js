@@ -135,14 +135,14 @@ db.allAsync = (sql) => {
 			}
 		});
 	});
-}
+};
 
 function validateChannel(message, db) {
 	return new Promise((resolve, reject) => {
 		const channelRegEx = /[0-9]{18}/g;
-		const currentChannel = message.channel.id.match(channelRegEx) + "";
+		const currentChannel = message.channel.id.match(channelRegEx) + '';
 
-		db.allAsync("SELECT channel_id FROM listening_channels").then((listeningChannels) => {
+		db.allAsync('SELECT channel_id FROM listening_channels').then((listeningChannels) => {
 			for (let i = 0; i < listeningChannels.length; i++) {
 				listeningChannels[i] = listeningChannels[i].channel_id;
 			}
@@ -153,6 +153,8 @@ function validateChannel(message, db) {
 			else {
 				resolve(true);
 			}
-		});
+		}).catch((err) => {
+			reject(err);
+		})
 	});
 }

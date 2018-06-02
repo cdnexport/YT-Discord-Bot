@@ -9,13 +9,13 @@ module.exports = {
 			case '-h':
 				message.channel.send('Use "!yt" for a random video.\nUse "!yt 20" for video number 20');
 				break;
-			case "-l":
+			case '-l':
 				args.shift();
-				this.modifyListeningChannels(message, args[0], db, "insert", this.insertListeningChannel);
+				this.modifyListeningChannels(message, args[0], db, 'insert', this.insertListeningChannel);
 				break;
-			case "-stop":
+			case '-stop':
 				args.shift();
-				this.modifyListeningChannels(message, args[0], db, "delete", this.deleteListeningChannel);
+				this.modifyListeningChannels(message, args[0], db, 'delete', this.deleteListeningChannel);
 				break;
 			default:
 				if (args[0]) {
@@ -49,17 +49,17 @@ module.exports = {
 		const channelRegEx = /[0-9]{18}/g;
 		if (channel && (channel = channel.match(channelRegEx))) {
 			db.getAsync(`SELECT channel_id FROM listening_channels WHERE channel_id = ${channel}`).then((foundChannel) => {
-				if (foundChannel && dbAction.toLowerCase() === "insert") {
+				if (foundChannel && dbAction.toLowerCase() === 'insert') {
 					return message.reply(`<#${channel}> is already being listened to.`);
 				}
-				else if (!foundChannel && dbAction.toLowerCase() === "delete") {
+				else if (!foundChannel && dbAction.toLowerCase() === 'delete') {
 					return message.reply(`<#${channel}> isn't being listened to.`);
 				}
 				method(db, channel);
 			});
 		}
 		else {
-			message.reply("You must specify a valid channel");
+			message.reply('You must specify a valid channel');
 		}
 	},
 	// I dream of the day DB is an object and these methods can GTFO of here and into there
