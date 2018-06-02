@@ -1,14 +1,12 @@
 const discord = require('discord.js');
+const sqlite3 = require('sqlite3').verbose();
+const fs = require('fs');
 
 const client = new discord.Client();
-
-const sqlite3 = require('sqlite3').verbose();
 const db = new sqlite3.Database('./db/yt.db');
+const cmdFiles = fs.readdirSync('./commands');
 
 client.commands = new discord.Collection();
-
-const fs = require('fs');
-const cmdFiles = fs.readdirSync('./commands');
 
 for (const file of cmdFiles) {
 	const cmd = require(`./commands/${file}`);
@@ -81,7 +79,6 @@ client.on('message', async message => {
 		cmd.execute(message, args, db);
 	}
 	catch (error) {
-		console.error(error);
 		writeToLog(error);
 		message.reply('An error occured.');
 	}
@@ -98,13 +95,12 @@ function saveNewLink(link, db) {
 			writeToLog(`Saved ${link} at ${now}`);
 		}
 		else {
-			writeToLog(`can't insert ${link}`);
+			writeToLog(`Can't insert ${link}`);
 		}
 	}).catch((err) => {
 		console.error(err);
 	});
 }
-
 
 function writeToLog(content) {
 	console.log(content);
