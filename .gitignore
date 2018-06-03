@@ -4,4 +4,3 @@ config.json
 yt.db
 package-lock.json
 /logs/
-config.json.sample
