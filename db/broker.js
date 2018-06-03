@@ -1,7 +1,6 @@
 const sqlite3 = require('sqlite3').verbose();
 const database = new sqlite3.Database('./db/yt.db');
 module.exports = {
-	db: new sqlite3.Database('./db/yt.db'),
 	getAsync(sql) {
 		return new Promise((resolve, reject) => {
 			database.get(sql, (err, row) => {
