@@ -1,9 +1,8 @@
 const discord = require('discord.js');
-const sqlite3 = require('sqlite3').verbose();
 const fs = require('fs');
 
 const client = new discord.Client();
-const db = new sqlite3.Database('./db/yt.db');
+const broker = require('./db/broker.js');
 const cmdFiles = fs.readdirSync('./commands');
 
 client.commands = new discord.Collection();
@@ -25,7 +24,7 @@ const linkRegEx = /(https:\/\/www\.youtube\.com\/watch\?v=.{11})/gm;
 client.on('message', async (message) => {
 	if (message.author.bot) return;
 
-	const isChannelValid = await validateChannel(message, db);
+	const isChannelValid = await validateChannel(message);
 	if (isChannelValid === false) {
 		return;
 	}
@@ -33,7 +32,7 @@ client.on('message', async (message) => {
 	const links = message.content.match(linkRegEx);
 	if (links) {
 		for (let i = 0; i < links.length; i++) {
-			saveNewLink(links[i], db);
+			saveNewLink(links[i]);
 		}
 	}
 
@@ -87,7 +86,7 @@ client.on('message', async (message) => {
 	}
 
 	try {
-		cmd.execute(message, args, db);
+		cmd.execute(message, args);
 	}
 	catch (error) {
 		writeToLog(error);
@@ -98,10 +97,10 @@ client.on('message', async (message) => {
 client.login(token);
 
 function saveNewLink(link) {
-	db.getAsync(`SELECT * FROM yt_links WHERE link = '${link}'`).then((val) => {
+	broker.getAsync(`SELECT * FROM yt_links WHERE link = '${link}'`).then((val) => {
 		if (!val) {
 			const sql = `INSERT INTO yt_links (link) VALUES ('${link}')`;
-			db.run(sql);
+			broker.db.run(sql);
 			const now = (new Date() + '').substring(0, 24);
 			writeToLog(`Saved ${link} at ${now}`);
 		}
@@ -131,15 +130,6 @@ function writeToLog(message) {
 	});
 }
 
-db.getAsync = (sql) => {
-	return new Promise((resolve, reject) => {
-		db.get(sql, (err, row) => {
-			if (err) reject(err);
-			else resolve(row);
-		});
-	});
-};
-
 Number.prototype.pad = (size) => {
 	let s = String(this);
 	while (s.length < (size || 2)) {
@@ -148,25 +138,11 @@ Number.prototype.pad = (size) => {
 	return s;
 };
 
-db.allAsync = (sql) => {
-	return new Promise((resolve, reject) => {
-		db.all(sql, (err, values) => {
-			if (err) {
-				reject(err);
-			}
-			else {
-				resolve(values);
-			}
-		});
-	});
-};
-
 function validateChannel(message) {
 	return new Promise((resolve, reject) => {
 		const channelRegEx = /[0-9]{18}/g;
 		const currentChannel = message.channel.id.match(channelRegEx) + '';
-
-		db.allAsync('SELECT channel_id FROM listening_channels').then((listeningChannels) => {
+		broker.allAsync('SELECT channel_id FROM listening_channels').then((listeningChannels) => {
 			for (let i = 0; i < listeningChannels.length; i++) {
 				listeningChannels[i] = listeningChannels[i].channel_id;
 			}
