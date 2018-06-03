@@ -1,8 +1,8 @@
 const discord = require('discord.js');
 const fs = require('fs');
+const broker = require('./db/broker.js');
 
 const client = new discord.Client();
-const broker = require('./db/broker.js');
 const cmdFiles = fs.readdirSync('./commands');
 
 client.commands = new discord.Collection();
@@ -97,10 +97,9 @@ client.on('message', async (message) => {
 client.login(token);
 
 function saveNewLink(link) {
-	broker.getAsync(`SELECT * FROM yt_links WHERE link = '${link}'`).then((val) => {
+	broker.isLinkInDb(link).then((val) => {
 		if (!val) {
-			const sql = `INSERT INTO yt_links (link) VALUES ('${link}')`;
-			broker.db.run(sql);
+			broker.insertLink(link);
 			const now = (new Date() + '').substring(0, 24);
 			writeToLog(`Saved ${link} at ${now}`);
 		}
@@ -134,7 +133,7 @@ function validateChannel(message) {
 	return new Promise((resolve, reject) => {
 		const channelRegEx = /[0-9]{18}/g;
 		const currentChannel = message.channel.id.match(channelRegEx) + '';
-		broker.allAsync('SELECT channel_id FROM listening_channels').then((listeningChannels) => {
+		broker.getAllListeningChannels().then((listeningChannels) => {
 			for (let i = 0; i < listeningChannels.length; i++) {
 				listeningChannels[i] = listeningChannels[i].channel_id;
 			}

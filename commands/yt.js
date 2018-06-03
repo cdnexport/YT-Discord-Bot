@@ -27,7 +27,7 @@ module.exports = {
 	modifyListeningChannels(channel, dbAction, method) {
 		const channelRegEx = /[0-9]{18}/g;
 		if (channel && (channel = channel.match(channelRegEx))) {
-			broker.getAsync(`SELECT channel_id FROM listening_channels WHERE channel_id = ${channel}`).then((foundChannel) => {
+			broker.getListeningChannel(channel).then((foundChannel) => {
 				if (foundChannel && dbAction.toLowerCase() === 'insert') {
 					return message.reply(`<#${channel}> is already being listened to.`);
 				}
@@ -50,11 +50,11 @@ module.exports = {
 		}
 	},
 	linkRandomVideo() {
-		broker.getAsync('SELECT MAX(ID) as id FROM yt_links').then((id) => {
+		broker.getMaxLinkId().then((id) => {
 			const max = id.id;
 			const randomId = Math.floor(Math.random() * max) + 1;
 
-			broker.getAsync(`SELECT * FROM yt_links WHERE id = ${randomId}`).then((link) => {
+			broker.getLink(randomId).then((link) => {
 				message.reply(`Video: ${link.id} ${link.link}`);
 			}).catch((err) => {
 				message.channel.send(`Error: ${err}`);
@@ -67,7 +67,7 @@ module.exports = {
 			message.channel.send(`${videoId} is an invalid video number.`);
 		}
 		else {
-			broker.getAsync(`SELECT * FROM yt_links WHERE id = ${videoId}`).then((link) => {
+			broker.getLink(videoId).then((link) => {
 				if (link) {
 					message.reply(`Video: ${link.id} ${link.link}`);
 				}
