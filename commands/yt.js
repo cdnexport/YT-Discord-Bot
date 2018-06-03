@@ -53,6 +53,18 @@ module.exports = {
 			this.linkRandomVideo(message, db);
 		}
 	},
+	linkRandomVideo(message, db) {
+		db.getAsync('SELECT MAX(ID) as id FROM yt_links').then((id) => {
+			const max = id.id;
+			const randomId = Math.floor(Math.random() * max) + 1;
+
+			db.getAsync(`SELECT * FROM yt_links WHERE id = ${randomId}`).then((link) => {
+				message.reply(`Video: ${link.id} ${link.link}`);
+			}).catch((err) => {
+				message.channel.send(`Error: ${err}`);
+			});
+		});
+	},
 	linkSpecificVideo(message, db, videoId) {
 		const numRegEx = /^[1-9][0-9]*$/g;
 		if (!videoId.match(numRegEx)) {
@@ -70,17 +82,5 @@ module.exports = {
 				return message.channel.send(`Error: ${err}`);
 			});
 		}
-	},
-	linkRandomVideo(message, db) {
-		db.getAsync('SELECT MAX(ID) as id FROM yt_links').then((id) => {
-			const max = id.id;
-			const randomId = Math.floor(Math.random() * max) + 1;
-
-			db.getAsync(`SELECT * FROM yt_links WHERE id = ${randomId}`).then((link) => {
-				message.reply(`Video: ${link.id} ${link.link}`);
-			}).catch((err) => {
-				message.channel.send(`Error: ${err}`);
-			});
-		});
 	},
 };

@@ -1,14 +1,12 @@
 const discord = require('discord.js');
+const sqlite3 = require('sqlite3').verbose();
+const fs = require('fs');
 
 const client = new discord.Client();
-
-const sqlite3 = require('sqlite3').verbose();
 const db = new sqlite3.Database('./db/yt.db');
+const cmdFiles = fs.readdirSync('./commands');
 
 client.commands = new discord.Collection();
-
-const fs = require('fs');
-const cmdFiles = fs.readdirSync('./commands');
 
 for (const file of cmdFiles) {
 	const cmd = require(`./commands/${file}`);
@@ -92,7 +90,6 @@ client.on('message', async (message) => {
 		cmd.execute(message, args, db);
 	}
 	catch (error) {
-		console.error(error);
 		writeToLog(error);
 		message.reply('An error occured.');
 	}
@@ -100,7 +97,7 @@ client.on('message', async (message) => {
 
 client.login(token);
 
-function saveNewLink(link, db) {
+function saveNewLink(link) {
 	db.getAsync(`SELECT * FROM yt_links WHERE link = '${link}'`).then((val) => {
 		if (!val) {
 			const sql = `INSERT INTO yt_links (link) VALUES ('${link}')`;
@@ -109,16 +106,29 @@ function saveNewLink(link, db) {
 			writeToLog(`Saved ${link} at ${now}`);
 		}
 		else {
-			writeToLog(`can't insert ${link}`);
+			writeToLog(`Can't insert ${link}`);
 		}
 	}).catch((err) => {
 		console.error(err);
 	});
 }
 
+function writeToLog(message) {
+	const today = new Date(),
+		logFolder = `${__dirname}/logs/`,
+		logName = `${today.getUTCFullYear().pad(4)}-${today.getUTCMonth().pad(2)}-${today.getUTCDate().pad(2)}.log`,
+		logFullName = logFolder + logName,
+		content = `${today.getUTCHours().pad(2)}:${today.getUTCMinutes().pad(2)}:${today.getUTCSeconds().pad(2)}.${today.getUTCMilliseconds().pad(3)}: ${message}\n`;
 
-function writeToLog(content) {
 	console.log(content);
+	if (!fs.existsSync(logFolder)) {
+		fs.mkdirSync(logFolder);
+	}
+	fs.appendFile(logFullName, content, (err) => {
+		if (err) {
+			console.error(err);
+		}
+	});
 }
 
 db.getAsync = (sql) => {
@@ -128,6 +138,14 @@ db.getAsync = (sql) => {
 			else resolve(row);
 		});
 	});
+};
+
+Number.prototype.pad = (size) => {
+	let s = String(this);
+	while (s.length < (size || 2)) {
+		s = '0' + s;
+	}
+	return s;
 };
 
 db.allAsync = (sql) => {
