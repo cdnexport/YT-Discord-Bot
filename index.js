@@ -117,7 +117,7 @@ function writeToLog(message) {
 		logFolder = `${__dirname}/logs/`,
 		logName = `${today.toDateString().substring(4).split(' ').join('-')}.log`,
 		logFullName = logFolder + logName,
-		content = `${today.toString().substring(16,24)}: ${message}\n`;
+		content = `${today.toString().substring(16, 24)}: ${message}\n`;
 
 	console.log(content);
 	if (!fs.existsSync(logFolder)) {
