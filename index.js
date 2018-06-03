@@ -100,8 +100,7 @@ function saveNewLink(link) {
 	broker.isLinkInDb(link).then((val) => {
 		if (!val) {
 			broker.insertLink(link);
-			const now = (new Date() + '').substring(0, 24);
-			writeToLog(`Saved ${link} at ${now}`);
+			writeToLog(`Saved ${link}`);
 		}
 		else {
 			writeToLog(`Can't insert ${link}`);
