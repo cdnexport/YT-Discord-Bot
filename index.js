@@ -16,12 +16,19 @@ for (const file of cmdFiles) {
 const { prefix, token } = require('./config.json');
 const cooldowns = new discord.Collection();
 
-client.on('ready', () => console.log('Ready!'));
+client.on('ready', () => {
+	console.log('Ready!');
+});
 
 const linkRegEx = /(https:\/\/www\.youtube\.com\/watch\?v=.{11})/gm;
 
-client.on('message', async message => {
+client.on('message', async (message) => {
 	if (message.author.bot) return;
+
+	const isChannelValid = await validateChannel(message, db);
+	if (isChannelValid === false) {
+		return;
+	}
 
 	const links = message.content.match(linkRegEx);
 	if (links) {
@@ -61,7 +68,9 @@ client.on('message', async message => {
 	const cdAmount = (cmd.cooldown || 3) * 1000;
 	if (!timestamps.has(message.author.id)) {
 		timestamps.set(message.author.id, now);
-		setTimeout(() => timestamps.delete(message.author.id), cdAmount);
+		setTimeout(() => {
+			timestamps.delete(message.author.id);
+		}, cdAmount);
 	}
 	else {
 		const expireTime = timestamps.get(message.author.id) + cdAmount;
@@ -72,7 +81,9 @@ client.on('message', async message => {
 		}
 
 		timestamps.set(message.author.id, now);
-		setTimeout(() => timestamps.delete(message.author.id), cdAmount);
+		setTimeout(() => {
+			timestamps.delete(message.author.id);
+		}, cdAmount);
 	}
 
 	try {
@@ -136,3 +147,38 @@ Number.prototype.pad = (size) => {
 	}
 	return s;
 };
+
+db.allAsync = (sql) => {
+	return new Promise((resolve, reject) => {
+		db.all(sql, (err, values) => {
+			if (err) {
+				reject(err);
+			}
+			else {
+				resolve(values);
+			}
+		});
+	});
+};
+
+function validateChannel(message, db) {
+	return new Promise((resolve, reject) => {
+		const channelRegEx = /[0-9]{18}/g;
+		const currentChannel = message.channel.id.match(channelRegEx) + '';
+
+		db.allAsync('SELECT channel_id FROM listening_channels').then((listeningChannels) => {
+			for (let i = 0; i < listeningChannels.length; i++) {
+				listeningChannels[i] = listeningChannels[i].channel_id;
+			}
+
+			if (!listeningChannels.includes(currentChannel) && listeningChannels.length !== 0) {
+				resolve(false);
+			}
+			else {
+				resolve(true);
+			}
+		}).catch((err) => {
+			reject(err);
+		});
+	});
+}
