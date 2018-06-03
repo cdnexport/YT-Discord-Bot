@@ -97,10 +97,9 @@ client.on('message', async (message) => {
 client.login(token);
 
 function saveNewLink(link) {
-	broker.getAsync(`SELECT * FROM yt_links WHERE link = '${link}'`).then((val) => {
+	broker.getLink(link).then((val) => {
 		if (!val) {
-			const sql = `INSERT INTO yt_links (link) VALUES ('${link}')`;
-			broker.db.run(sql);
+			broker.insertLink(link);
 			const now = (new Date() + '').substring(0, 24);
 			writeToLog(`Saved ${link} at ${now}`);
 		}

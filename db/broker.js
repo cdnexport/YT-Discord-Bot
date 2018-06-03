@@ -46,4 +46,16 @@ module.exports = {
 			});
 		});
 	},
+	getLink(link) {
+		return new Promise((resolve, reject) => {
+			this.getAsync(`SELECT * FROM yt_links WHERE link = '${link}'`).then((val) => {
+				resolve(val);
+			}).catch((err) => {
+				reject(err);
+			});
+		});
+	},
+	insertLink(link) {
+		database.run(`INSERT INTO yt_links (link) VALUES ('${link}')`);
+	},
 };
