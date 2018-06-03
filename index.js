@@ -161,7 +161,7 @@ db.allAsync = (sql) => {
 	});
 };
 
-function validateChannel(message, db) {
+function validateChannel(message) {
 	return new Promise((resolve, reject) => {
 		const channelRegEx = /[0-9]{18}/g;
 		const currentChannel = message.channel.id.match(channelRegEx) + '';
