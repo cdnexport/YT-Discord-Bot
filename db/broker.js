@@ -46,10 +46,15 @@ module.exports = {
 			});
 		});
 	},
-	getLink(link) {
+	isLinkInDb(link) {
 		return new Promise((resolve, reject) => {
 			this.getAsync(`SELECT * FROM yt_links WHERE link = '${link}'`).then((val) => {
-				resolve(val);
+				if (val) {
+					resolve(true);
+				}
+				else {
+					resolve(false);
+				}
 			}).catch((err) => {
 				reject(err);
 			});

@@ -97,7 +97,7 @@ client.on('message', async (message) => {
 client.login(token);
 
 function saveNewLink(link) {
-	broker.getLink(link).then((val) => {
+	broker.isLinkInDb(link).then((val) => {
 		if (!val) {
 			broker.insertLink(link);
 			const now = (new Date() + '').substring(0, 24);
