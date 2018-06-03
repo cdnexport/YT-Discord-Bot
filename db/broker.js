@@ -63,4 +63,22 @@ module.exports = {
 	insertLink(link) {
 		database.run(`INSERT INTO yt_links (link) VALUES ('${link}')`);
 	},
+	getLink(id) {
+		return new Promise((resolve, reject) => {
+			this.getAsync(`SELECT * FROM yt_links WHERE id = ${id}`).then((val) => {
+				resolve(val);
+			}).catch((err) => {
+				reject(err);
+			});
+		});
+	},
+	getMaxLinkId() {
+		return new Promise((resolve, reject) => {
+			this.getAsync('SELECT MAX(ID) as id FROM yt_links').then((val) => {
+				resolve(val);
+			}).catch((err) => {
+				reject(err);
+			});
+		});
+	},
 };
