@@ -115,9 +115,9 @@ function saveNewLink(link) {
 function writeToLog(message) {
 	const today = new Date(),
 		logFolder = `${__dirname}/logs/`,
-		logName = `${today.getUTCFullYear().pad(4)}-${today.getUTCMonth().pad(2)}-${today.getUTCDate().pad(2)}.log`,
+		logName = `${today.toDateString().substring(4).split(' ').join('-')}.log`,
 		logFullName = logFolder + logName,
-		content = `${today.getUTCHours().pad(2)}:${today.getUTCMinutes().pad(2)}:${today.getUTCSeconds().pad(2)}.${today.getUTCMilliseconds().pad(3)}: ${message}\n`;
+		content = `${today.toString().substring(16,24)}: ${message}\n`;
 
 	console.log(content);
 	if (!fs.existsSync(logFolder)) {
