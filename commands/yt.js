@@ -53,30 +53,6 @@ module.exports = {
 			this.linkRandomVideo(message, db);
 		}
 	},
-	modifyListeningChannels(message, channel, db, dbAction, method) {
-		const channelRegEx = /[0-9]{18}/g;
-		if (channel && (channel = channel.match(channelRegEx))) {
-			db.getAsync(`SELECT channel_id FROM listening_channels WHERE channel_id = ${channel}`).then((foundChannel) => {
-				if (foundChannel && dbAction.toLowerCase() == 'insert') {
-					return message.reply(`<#${channel}> is already being listened to.`);
-				}
-				else if (!foundChannel && dbAction.toLowerCase() == 'delete') {
-					return message.reply(`<#${channel}> isn't being listened to.`);
-				}
-				method(db, channel);
-			});
-		}
-		else {
-			message.reply('You must specify a valid channel');
-		}
-	},
-	// I dream of the day DB is an object and these methods can GTFO of here and into there
-	insertListeningChannel(db, value) {
-		db.run(`INSERT INTO listening_channels(channel_id) VALUES (${value})`);
-	},
-	deleteListeningChannel(db, value) {
-		db.run(`DELETE FROM listening_channels WHERE channel_id = ${value}`);
-  },
 	linkRandomVideo(message, db) {
 		db.getAsync('SELECT MAX(ID) as id FROM yt_links').then((id) => {
 			const max = id.id;
@@ -88,7 +64,7 @@ module.exports = {
 				message.channel.send(`Error: ${err}`);
 			});
 		});
-  },
+  	},
 	linkSpecificVideo(message, db, videoId) {
 		const numRegEx = /^[1-9][0-9]*$/g;
 		if (!videoId.match(numRegEx)) {
