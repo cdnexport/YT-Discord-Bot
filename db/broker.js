@@ -21,15 +21,15 @@ module.exports = {
 			});
 		});
 	},
-	insertListeningChannel(value) {
-		database.run(`INSERT INTO listening_channels(channel_id) VALUES (${value})`);
+	insertListeningChannel(channel_id) {
+		database.run(`INSERT INTO listening_channels(channel_id) VALUES (${channel_id})`);
 	},
-	deleteListeningChannel(value) {
-		database.run(`DELETE FROM listening_channels WHERE channel_id = ${value}`);
+	deleteListeningChannel(channel_id) {
+		database.run(`DELETE FROM listening_channels WHERE channel_id = ${channel_id}`);
 	},
-	getListeningChannel(value) {
+	getListeningChannel(channel_id) {
 		return new Promise((resolve, reject) => {
-			this.getAsync(`SELECT channel_id FROM listening_channels WHERE channel_id = ${value}`).then((val) => {
+			this.getAsync(`SELECT channel_id FROM listening_channels WHERE channel_id = ${channel_id}`).then((val) => {
 				resolve(val);
 			}).catch((err) => {
 				reject(err);
