@@ -134,7 +134,7 @@ function validateChannel(message) {
 	return new Promise((resolve, reject) => {
 		const channelRegEx = /[0-9]{18}/g;
 		const currentChannel = message.channel.id.match(channelRegEx) + '';
-		broker.allAsync('SELECT channel_id FROM listening_channels').then((listeningChannels) => {
+		broker.getAllListeningChannels().then((listeningChannels) => {
 			for (let i = 0; i < listeningChannels.length; i++) {
 				listeningChannels[i] = listeningChannels[i].channel_id;
 			}

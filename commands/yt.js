@@ -27,7 +27,7 @@ module.exports = {
 	modifyListeningChannels(channel, dbAction, method) {
 		const channelRegEx = /[0-9]{18}/g;
 		if (channel && (channel = channel.match(channelRegEx))) {
-			broker.getAsync(`SELECT channel_id FROM listening_channels WHERE channel_id = ${channel}`).then((foundChannel) => {
+			broker.getListeningChannel(channel).then((foundChannel) => {
 				if (foundChannel && dbAction.toLowerCase() === 'insert') {
 					return message.reply(`<#${channel}> is already being listened to.`);
 				}
