@@ -1,8 +1,8 @@
 const discord = require('discord.js');
 const fs = require('fs');
+const broker = require('./db/broker.js');
 
 const client = new discord.Client();
-const broker = require('./db/broker.js');
 const cmdFiles = fs.readdirSync('./commands');
 
 client.commands = new discord.Collection();
