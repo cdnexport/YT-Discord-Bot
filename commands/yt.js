@@ -20,7 +20,7 @@ module.exports = {
 				this.modifyListeningChannels(args[0], 'delete', broker.deleteListeningChannel);
 				break;
 			default:
-				this.defaultActionWithNoSubArgs(message, args);
+				this.defaultActionWithNoSubArgs(args);
 				break;
 		}
 	},
@@ -43,10 +43,10 @@ module.exports = {
 	},
 	defaultActionWithNoSubArgs(args) {
 		if (args[0]) {
-			this.linkSpecificVideo(message, args[0]);
+			this.linkSpecificVideo(args[0]);
 		}
 		else {
-			this.linkRandomVideo(message);
+			this.linkRandomVideo();
 		}
 	},
 	linkRandomVideo() {
