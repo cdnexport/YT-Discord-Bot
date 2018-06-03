@@ -64,7 +64,7 @@ module.exports = {
 				message.channel.send(`Error: ${err}`);
 			});
 		});
-  	},
+	},
 	linkSpecificVideo(message, db, videoId) {
 		const numRegEx = /^[1-9][0-9]*$/g;
 		if (!videoId.match(numRegEx)) {
