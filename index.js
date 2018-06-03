@@ -130,14 +130,6 @@ function writeToLog(message) {
 	});
 }
 
-Number.prototype.pad = (size) => {
-	let s = String(this);
-	while (s.length < (size || 2)) {
-		s = '0' + s;
-	}
-	return s;
-};
-
 function validateChannel(message) {
 	return new Promise((resolve, reject) => {
 		const channelRegEx = /[0-9]{18}/g;
